@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { ArrowRight, ShieldCheck, Zap, Award, Users2, Building2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -28,17 +29,27 @@ export default function Index() {
   );
 
   const featuredBrands = brands.slice(0, 12);
+  const [videoReady, setVideoReady] = useState(false);
 
   return (
     <>
       {/* Hero — video background, content centred */}
       <section className="relative -mt-[88px] min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Poster shown immediately — replaced by video once it plays */}
+        <img
+          src="/datacentre.avif"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          preload="auto"
+          onCanPlay={() => setVideoReady(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoReady ? "opacity-100" : "opacity-0"}`}
           aria-hidden="true"
         >
           <source src="/hero.mp4" type="video/mp4" />
