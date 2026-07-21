@@ -452,19 +452,19 @@ export default function Products() {
         </div>
       </section>
 
-      {/* Tab bar */}
-      <div className="sticky top-[88px] z-30 bg-white border-b border-border shadow-sm">
+      {/* Tab bar — compact pills, centred */}
+      <div className="bg-white border-b border-border">
         <div className="container-wide">
-          <div className="flex gap-1 overflow-x-auto py-2 no-scrollbar">
+          <div className="flex items-center justify-center gap-2 py-4 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setTab(tab.id)}
                 className={cn(
-                  "inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium whitespace-nowrap transition-all",
+                  "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition-all",
                   activeTab === tab.id
-                    ? "bg-primary text-white shadow-sm"
-                    : "text-foreground/70 hover:text-primary hover:bg-surface"
+                    ? "bg-primary text-white border-primary shadow-sm"
+                    : "bg-white text-foreground/70 border-border hover:border-accent hover:text-primary"
                 )}
               >
                 {tab.icon}
