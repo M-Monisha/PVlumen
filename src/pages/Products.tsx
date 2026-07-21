@@ -62,92 +62,94 @@ function ByBrandView({ activeBrand, setActiveBrand }: {
     [activeBrand]
   );
 
-  return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      {/* Brand list sidebar */}
-      <div className="lg:w-64 flex-shrink-0">
-        <div className="bg-white border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-surface">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {brands.length} Brands
-            </span>
-          </div>
-          <ul className="divide-y divide-border max-h-[70vh] overflow-y-auto">
-            {brands.map((b) => {
-              const count = productsByBrand(b.slug).length;
-              return (
-                <li key={b.slug}>
-                  <button
-                    onClick={() => setActiveBrand(activeBrand === b.slug ? null : b.slug)}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface",
-                      activeBrand === b.slug && "bg-accent/10 border-l-2 border-accent"
-                    )}
-                  >
-                    <img
-                      src={b.logo}
-                      alt={b.name}
-                      className="w-10 h-7 object-contain flex-shrink-0"
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-primary truncate">{b.name}</div>
-                      <div className="text-[11px] text-muted-foreground">
-                        {count} product{count !== 1 ? "s" : ""}
-                      </div>
-                    </div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+  const selectedBrand = brands.find(b => b.slug === activeBrand);
+
+  // If no brand selected, show grid of brand cards
+  if (!activeBrand) {
+    return (
+      <div>
+        <div className="mb-8">
+          <h3 className="font-display text-2xl font-bold text-primary mb-2">Browse by Brand</h3>
+          <p className="text-muted-foreground text-sm">Select a brand to view its product portfolio</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {brands.map((b) => {
+            const count = productsByBrand(b.slug).length;
+            return (
+              <button
+                key={b.slug}
+                onClick={() => setActiveBrand(b.slug)}
+                className="group bg-white border border-border rounded-xl p-5 hover:border-accent hover:shadow-card transition-all duration-300 flex flex-col items-center text-center"
+              >
+                <div className="h-16 flex items-center justify-center mb-3">
+                  <img
+                    src={b.logo}
+                    alt={b.name}
+                    className="max-h-14 max-w-full object-contain opacity-70 group-hover:opacity-100 transition-opacity"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                </div>
+                <div className="text-xs font-semibold text-primary group-hover:text-accent transition-colors line-clamp-2 mb-2">
+                  {b.name}
+                </div>
+                <div className="text-[11px] text-muted-foreground">
+                  {count} product{count !== 1 ? "s" : ""}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
+    );
+  }
 
-      {/* Products panel */}
-      <div className="flex-1 min-w-0">
-        {!activeBrand ? (
-          <div className="flex flex-col items-center justify-center h-64 text-center bg-white border border-border rounded-xl">
-            <Tag className="w-8 h-8 text-muted-foreground/40 mb-3" />
-            <p className="text-muted-foreground text-sm">Select a brand from the list to view its products</p>
-          </div>
-        ) : brandProducts.length === 0 ? (
-          <div className="bg-white border border-border rounded-xl p-6">
-            <EmptyState label={brands.find(b => b.slug === activeBrand)?.name || activeBrand} />
-          </div>
-        ) : (
-          <div>
-            {/* Brand header */}
-            <div className="flex items-center gap-4 mb-6 bg-white border border-border rounded-xl p-5">
-              <img
-                src={brands.find(b => b.slug === activeBrand)?.logo}
-                alt={activeBrand}
-                className="h-10 max-w-[120px] object-contain"
-                onError={(e) => { e.currentTarget.style.display = "none"; }}
-              />
-              <div>
-                <div className="font-display font-bold text-primary">
-                  {brands.find(b => b.slug === activeBrand)?.name}
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {brandProducts.length} product{brandProducts.length !== 1 ? "s" : ""} listed
-                </div>
+  // Brand selected - show products
+  return (
+    <div>
+      <button
+        onClick={() => setActiveBrand(null)}
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
+      >
+        <ArrowRight className="w-4 h-4 rotate-180" />
+        Back to all brands
+      </button>
+
+      {brandProducts.length === 0 ? (
+        <div className="bg-white border border-border rounded-xl p-6">
+          <EmptyState label={selectedBrand?.name || activeBrand} />
+        </div>
+      ) : (
+        <div>
+          {/* Brand header */}
+          <div className="flex items-center gap-4 mb-8 bg-white border border-border rounded-xl p-6">
+            <img
+              src={selectedBrand?.logo}
+              alt={activeBrand}
+              className="h-12 max-w-[140px] object-contain"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+            <div>
+              <div className="font-display font-bold text-primary text-xl">
+                {selectedBrand?.name}
               </div>
-              <Link
-                to={`/brands/${activeBrand}`}
-                className="ml-auto inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-accent transition-colors"
-              >
-                Full brand page <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+              <div className="text-sm text-muted-foreground mt-1">
+                {brandProducts.length} product{brandProducts.length !== 1 ? "s" : ""} available
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {brandProducts.map((p) => (
-                <ProductCard key={p.slug} product={p} />
-              ))}
-            </div>
+            <Link
+              to={`/brands/${activeBrand}`}
+              className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-accent transition-colors"
+            >
+              Full brand page <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-        )}
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {brandProducts.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -163,78 +165,93 @@ function BySolutionView({ activeCat, setActiveCat }: {
   );
   const cat = categories.find(c => c.slug === activeCat);
 
-  return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      {/* Category sidebar */}
-      <div className="lg:w-64 flex-shrink-0">
-        <div className="bg-white border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-surface">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              5 Solution Areas
-            </span>
-          </div>
-          <ul className="divide-y divide-border">
-            {categories.map((c) => {
-              const count = productsByCategory(c.slug).length;
-              return (
-                <li key={c.slug}>
-                  <button
-                    onClick={() => setActiveCat(activeCat === c.slug ? null : c.slug)}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-surface",
-                      activeCat === c.slug && "bg-accent/10 border-l-2 border-accent"
-                    )}
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-primary">{c.name}</div>
-                      <div className="text-[11px] text-muted-foreground mt-0.5">{count} products</div>
-                    </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+  // If no category selected, show grid of category cards
+  if (!activeCat) {
+    return (
+      <div>
+        <div className="mb-8">
+          <h3 className="font-display text-2xl font-bold text-primary mb-2">Browse by Solution</h3>
+          <p className="text-muted-foreground text-sm">Select a solution area to view products</p>
         </div>
-      </div>
-
-      {/* Products panel */}
-      <div className="flex-1 min-w-0">
-        {!activeCat ? (
-          <div className="flex flex-col items-center justify-center h-64 text-center bg-white border border-border rounded-xl">
-            <Layers className="w-8 h-8 text-muted-foreground/40 mb-3" />
-            <p className="text-muted-foreground text-sm">Select a solution area to view products</p>
-          </div>
-        ) : catProducts.length === 0 ? (
-          <div className="bg-white border border-border rounded-xl p-6">
-            <EmptyState label={cat?.name || activeCat} />
-          </div>
-        ) : (
-          <div>
-            <div className="mb-6">
-              <div className="text-xs uppercase tracking-wider text-accent font-semibold mb-1">{cat?.name}</div>
-              <h3 className="font-display text-xl font-bold text-primary">{catProducts.length} products</h3>
-              <p className="text-sm text-muted-foreground mt-1">{cat?.description}</p>
-            </div>
-            {/* Group by sub-category */}
-            {cat?.subCategories.map((sub) => {
-              const subProducts = catProducts.filter(p => p.subCategory === sub.slug);
-              if (subProducts.length === 0) return null;
-              return (
-                <div key={sub.slug} className="mb-10">
-                  <h4 className="font-display font-semibold text-primary text-sm mb-4 pb-2 border-b border-border flex items-center justify-between">
-                    {sub.name}
-                    <span className="text-xs font-normal text-muted-foreground">{subProducts.length} products</span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {subProducts.map((p) => <ProductCard key={p.slug} product={p} />)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {categories.map((c) => {
+            const count = productsByCategory(c.slug).length;
+            return (
+              <button
+                key={c.slug}
+                onClick={() => setActiveCat(c.slug)}
+                className="group relative overflow-hidden rounded-xl bg-white border border-border hover:border-accent hover:shadow-card transition-all duration-300 text-left"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-base font-bold text-primary group-hover:text-accent transition-colors leading-snug">
+                    {c.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">
+                    {c.short}
+                  </p>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-[11px] text-muted-foreground">
+                      {count} product{count !== 1 ? "s" : ""}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </button>
+            );
+          })}
+        </div>
       </div>
+    );
+  }
+
+  // Category selected - show products
+  return (
+    <div>
+      <button
+        onClick={() => setActiveCat(null)}
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
+      >
+        <ArrowRight className="w-4 h-4 rotate-180" />
+        Back to all solutions
+      </button>
+
+      {catProducts.length === 0 ? (
+        <div className="bg-white border border-border rounded-xl p-6">
+          <EmptyState label={cat?.name || activeCat} />
+        </div>
+      ) : (
+        <div>
+          <div className="mb-8">
+            <div className="text-xs uppercase tracking-wider text-accent font-semibold mb-2">{cat?.name}</div>
+            <h3 className="font-display text-2xl font-bold text-primary">{catProducts.length} products</h3>
+            <p className="text-sm text-muted-foreground mt-2">{cat?.description}</p>
+          </div>
+          {/* Group by sub-category */}
+          {cat?.subCategories.map((sub) => {
+            const subProducts = catProducts.filter(p => p.subCategory === sub.slug);
+            if (subProducts.length === 0) return null;
+            return (
+              <div key={sub.slug} className="mb-10">
+                <h4 className="font-display font-semibold text-primary text-base mb-5 pb-3 border-b border-border flex items-center justify-between">
+                  {sub.name}
+                  <span className="text-sm font-normal text-muted-foreground">{subProducts.length}</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  {subProducts.map((p) => <ProductCard key={p.slug} product={p} />)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -252,80 +269,106 @@ function ByIndustryView({ activeIndustry, setActiveIndustry }: {
 
   const ind = industries.find(i => i.slug === activeIndustry);
 
-  return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      {/* Industry sidebar */}
-      <div className="lg:w-64 flex-shrink-0">
-        <div className="bg-white border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-surface">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {industries.length} Industries
-            </span>
-          </div>
-          <ul className="divide-y divide-border">
-            {industries.map((ind) => {
-              const cats = industryCategories[ind.slug] || [];
-              const count = products.filter(p => cats.includes(p.category)).length;
-              return (
-                <li key={ind.slug}>
-                  <button
-                    onClick={() => setActiveIndustry(activeIndustry === ind.slug ? null : ind.slug)}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-surface",
-                      activeIndustry === ind.slug && "bg-accent/10 border-l-2 border-accent"
-                    )}
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-primary">{ind.name}</div>
-                      <div className="text-[11px] text-muted-foreground mt-0.5">{count} products</div>
-                    </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+  // Industry card image mapping
+  const industryImages: Record<string, string> = {
+    "data-centre": "/datacentre.avif",
+    "enterprise": "/enterprise.jpg",
+    "transport": "/werahouse.webp",
+    "retail": "/retail.webp",
+    "manufacturing": "/manufacturing.jpg",
+    "power": "/power.jpg",
+    "defense": "/defense.jpg",
+    "public-infra": "/publicinfrastructure.webp",
+  };
 
-      {/* Products panel */}
-      <div className="flex-1 min-w-0">
-        {!activeIndustry ? (
-          <div className="flex flex-col items-center justify-center h-64 text-center bg-white border border-border rounded-xl">
-            <Building2 className="w-8 h-8 text-muted-foreground/40 mb-3" />
-            <p className="text-muted-foreground text-sm">Select an industry to see relevant products</p>
-          </div>
-        ) : industryProducts.length === 0 ? (
-          <div className="bg-white border border-border rounded-xl p-6">
-            <EmptyState label={ind?.name || activeIndustry} />
-          </div>
-        ) : (
-          <div>
-            <div className="mb-6">
-              <div className="text-xs uppercase tracking-wider text-accent font-semibold mb-1">{ind?.name}</div>
-              <h3 className="font-display text-xl font-bold text-primary">{industryProducts.length} products</h3>
-              <p className="text-sm text-muted-foreground mt-1">{ind?.desc}</p>
-            </div>
-            {/* Group by category */}
-            {(industryCategories[activeIndustry] || []).map((catSlug) => {
-              const cat = categories.find(c => c.slug === catSlug);
-              const catProducts = industryProducts.filter(p => p.category === catSlug);
-              if (catProducts.length === 0) return null;
-              return (
-                <div key={catSlug} className="mb-10">
-                  <h4 className="font-display font-semibold text-primary text-sm mb-4 pb-2 border-b border-border flex items-center justify-between">
-                    {cat?.name}
-                    <span className="text-xs font-normal text-muted-foreground">{catProducts.length} products</span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {catProducts.map((p) => <ProductCard key={p.slug} product={p} />)}
+  // If no industry selected, show grid of industry cards
+  if (!activeIndustry) {
+    return (
+      <div>
+        <div className="mb-8">
+          <h3 className="font-display text-2xl font-bold text-primary mb-2">Browse by Industry</h3>
+          <p className="text-muted-foreground text-sm">Select an industry to see relevant products</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {industries.map((ind) => {
+            const cats = industryCategories[ind.slug] || [];
+            const count = products.filter(p => cats.includes(p.category)).length;
+            return (
+              <button
+                key={ind.slug}
+                onClick={() => setActiveIndustry(ind.slug)}
+                className="group relative overflow-hidden rounded-xl min-h-[160px] flex flex-col justify-end hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-card"
+              >
+                {/* Background image */}
+                <img
+                  src={industryImages[ind.slug] ?? "/datacentre.avif"}
+                  alt={ind.name}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                {/* Dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+                {/* Text */}
+                <div className="relative p-4 z-10">
+                  <div className="font-display font-bold text-white text-sm md:text-[15px] leading-snug drop-shadow">
+                    {ind.name}
+                  </div>
+                  <div className="text-[11px] text-white/80 mt-1.5 leading-relaxed line-clamp-2">
+                    {ind.desc}
+                  </div>
+                  <div className="text-[11px] text-white/70 mt-2">
+                    {count} product{count !== 1 ? "s" : ""}
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </button>
+            );
+          })}
+        </div>
       </div>
+    );
+  }
+
+  // Industry selected - show products
+  return (
+    <div>
+      <button
+        onClick={() => setActiveIndustry(null)}
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
+      >
+        <ArrowRight className="w-4 h-4 rotate-180" />
+        Back to all industries
+      </button>
+
+      {industryProducts.length === 0 ? (
+        <div className="bg-white border border-border rounded-xl p-6">
+          <EmptyState label={ind?.name || activeIndustry} />
+        </div>
+      ) : (
+        <div>
+          <div className="mb-8">
+            <div className="text-xs uppercase tracking-wider text-accent font-semibold mb-2">{ind?.name}</div>
+            <h3 className="font-display text-2xl font-bold text-primary">{industryProducts.length} products</h3>
+            <p className="text-sm text-muted-foreground mt-2">{ind?.desc}</p>
+          </div>
+          {/* Group by category */}
+          {(industryCategories[activeIndustry] || []).map((catSlug) => {
+            const cat = categories.find(c => c.slug === catSlug);
+            const catProducts = industryProducts.filter(p => p.category === catSlug);
+            if (catProducts.length === 0) return null;
+            return (
+              <div key={catSlug} className="mb-10">
+                <h4 className="font-display font-semibold text-primary text-base mb-5 pb-3 border-b border-border flex items-center justify-between">
+                  {cat?.name}
+                  <span className="text-sm font-normal text-muted-foreground">{catProducts.length}</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  {catProducts.map((p) => <ProductCard key={p.slug} product={p} />)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
