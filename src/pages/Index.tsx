@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Zap, Award, Users2, Building2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
@@ -7,7 +7,34 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import { categories } from "@/data/categories";
 import { brands } from "@/data/brands";
 import { stats, industries, strengths, posts } from "@/data/site";
+import { products } from "@/data/products";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+
+const strengthIcons = [Building2, Zap, Award, ShieldCheck, Users2, Award];
+
+// Map industry slugs to images in /public
+const industryImages: Record<string, string> = {
+  "data-centre": "/datacentre.avif",
+  "enterprise": "/enterprise.jpg",
+  "transport": "/werahouse.webp",
+  "retail": "/retail.webp",
+  "manufacturing": "/manufacturing.jpg",
+  "power": "/power.jpg",
+  "defense": "/defense.jpg",
+  "public-infra": "/publicinfrastructure.webp",
+};
+
+// Pick products that have images for the hero mosaic
+const heroProductImages = [
+  "https://www.pvlumens.com/images/products/DS3678-SR.jpg",
+  "https://www.pvlumens.com/images/products/testo-103-l1.jpg",
+  "https://www.pvlumens.com/images/products/Flir_One%20Edge%20Pro.jpg",
+  "https://www.pvlumens.com/images/products/Sidekick-2-3D-with-Phone-Shadow-Only.png",
+  "https://www.pvlumens.com/images/products/testo-115i-l1.jpg",
+  "https://www.pvlumens.com/images/products/testo-mini-w-l1.jpg",
+  "https://www.pvlumens.com/images/products/Sidekick1111.jpg",
+  "https://www.pvlumens.com/images/products/ECSE-Certified.jpg",
+];
 
 const strengthIcons = [Building2, Zap, Award, ShieldCheck, Users2, Award];
 
@@ -30,94 +57,128 @@ export default function Index() {
   );
 
   const featuredBrands = brands.slice(0, 12);
-  const [videoReady, setVideoReady] = useState(false);
 
   return (
     <>
-      {/* ── Hero — fullscreen video, Framer Motion animations ── */}
-      <section className="relative -mt-[88px] h-[100svh] flex items-center justify-center overflow-hidden">
-        {/* Poster (shows instantly) */}
-        <img
-          src="/datacentre.avif"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
+      {/* ── Hero — split layout: text left, product mosaic right ── */}
+      <section className="relative -mt-[88px] min-h-[100svh] bg-primary overflow-hidden flex items-center">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: "radial-gradient(circle at 70% 50%, hsl(199 80% 51% / 0.6), transparent 60%), radial-gradient(circle at 20% 80%, hsl(199 80% 51% / 0.3), transparent 50%)" }}
         />
-        {/* Video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          onCanPlay={() => setVideoReady(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoReady ? "opacity-100" : "opacity-0"}`}
-          aria-hidden="true"
-        >
-          <source src="/hero.mp4" type="video/mp4" />
-        </video>
 
-        {/* Dark overlay */}
-        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.55)" }} />
+        <div className="relative container-wide w-full pt-[88px] pb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-        {/* Hero content — centred */}
-        <div className="relative z-10 container-wide text-center text-white px-4 pt-[88px]">
-          {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl md:text-5xl lg:text-[68px] font-extrabold leading-[1.05] tracking-tight"
-          >
-            Distribution,{" "}
-            <span className="italic text-accent">Redefined</span>
-            <br />for a connected India.
-          </motion.h1>
-
-          {/* Subtext */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-6 text-base md:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed"
-          >
-            India's trusted value-added distributor — connecting 2,000+ channel partners
-            with 25+ global technology leaders, with reach extending across Sri Lanka,
-            Bangladesh, Nepal &amp; the Maldives.
-          </motion.p>
-
-          {/* CTA buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55 }}
-            className="flex flex-wrap items-center justify-center gap-4 mt-8"
-          >
-            <Link
-              to="/brands"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-white text-primary font-semibold text-sm hover:bg-white/90 transition-colors shadow-elevated"
+          {/* Left — text content */}
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs uppercase tracking-widest font-semibold text-white/80 mb-6"
             >
-              Explore Brands <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-white/50 text-white font-semibold text-sm hover:bg-white/10 transition-colors backdrop-blur"
-            >
-              Browse Products
-            </Link>
-          </motion.div>
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              Pan-India Value Added Distributor
+            </motion.div>
 
-          {/* Stats row */}
+            <motion.h1
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+              className="text-4xl md:text-5xl lg:text-[60px] font-extrabold leading-[1.06] tracking-tight text-white"
+            >
+              Distribution,{" "}
+              <span className="italic text-accent">Redefined</span>
+              <br />for a connected
+              <br />India.
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="mt-6 text-base md:text-lg text-white/75 max-w-lg leading-relaxed"
+            >
+              India's trusted value-added distributor — connecting 2,000+ channel partners
+              with 25+ global technology leaders, with reach extending across Sri Lanka,
+              Bangladesh, Nepal &amp; the Maldives.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex flex-wrap gap-3 mt-8"
+            >
+              <Link
+                to="/brands"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-white text-primary font-semibold text-sm hover:bg-white/90 transition-colors shadow-elevated"
+              >
+                Explore Brands <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/products"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-white/40 text-white font-semibold text-sm hover:bg-white/10 transition-colors"
+              >
+                Browse Products
+              </Link>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/15"
+            >
+              {stats.slice(0, 3).map((s) => (
+                <div key={s.label}>
+                  <div className="text-2xl md:text-3xl font-bold text-white">{s.value}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-white/50 mt-0.5">{s.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right — product image mosaic */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.75 }}
-            className="grid grid-cols-3 sm:grid-cols-5 gap-6 mt-14 pt-8 border-t border-white/20 max-w-3xl mx-auto"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden lg:grid grid-cols-3 gap-3 auto-rows-[120px]"
           >
-            {stats.map((s) => (
-              <div key={s.label}>
-                <div className="text-xl md:text-2xl font-bold text-white">{s.value}</div>
-                <div className="text-[10px] uppercase tracking-wider text-white/55 mt-0.5">{s.label}</div>
+            {/* Category images — larger tiles */}
+            {categories.map((cat, i) => (
+              <Link
+                key={cat.slug}
+                to={`/products/${cat.slug}`}
+                className={`group relative overflow-hidden rounded-xl bg-white/10 border border-white/20 hover:border-accent hover:scale-[1.02] transition-all duration-300 ${i === 0 ? "row-span-2" : ""}`}
+              >
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                  loading="eager"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <div className="text-white text-xs font-semibold leading-snug drop-shadow">{cat.name}</div>
+                </div>
+              </Link>
+            ))}
+            {/* Product images — small tiles */}
+            {heroProductImages.slice(0, 4).map((src, i) => (
+              <div
+                key={i}
+                className="relative overflow-hidden rounded-xl bg-white border border-white/20"
+              >
+                <img
+                  src={src}
+                  alt="PV Lumens product"
+                  className="w-full h-full object-contain p-3"
+                  loading="eager"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
               </div>
             ))}
           </motion.div>

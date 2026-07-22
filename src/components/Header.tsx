@@ -19,32 +19,14 @@ const primaryLinks = [
 export default function Header() {
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
-  const isHome = pathname === "/";
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => setMobileOpen(false), [pathname]);
-
-  // On home page: transparent when at top, white when scrolled
-  // On all other pages: always white
-  const transparent = isHome && !scrolled && !mobileOpen;
 
   return (
     <>
       <header
-        className={cn(
-          "fixed top-0 inset-x-0 z-50 transition-all duration-300 h-[88px]",
-          transparent
-            ? "bg-transparent"
-            : "bg-white border-b border-border shadow-sm"
-        )}
+        className="fixed top-0 inset-x-0 z-50 h-[88px] bg-white border-b border-border shadow-sm"
       >
         <div className="container-wide h-full flex items-center justify-between gap-4">
           {/* Logo */}
@@ -52,10 +34,7 @@ export default function Header() {
             <img
               src="/logo.jpeg"
               alt="PV Lumens"
-              className={cn(
-                "h-20 w-auto object-contain transition-all duration-300",
-                transparent && "brightness-0 invert"
-              )}
+              className="h-20 w-auto object-contain"
             />
           </Link>
 
@@ -72,10 +51,7 @@ export default function Header() {
                   <NavLink
                     to={link.to}
                     className={cn(
-                      "px-3 py-2 text-[13px] font-medium flex items-center gap-1 rounded-md transition-colors",
-                      transparent
-                        ? "text-white/90 hover:text-white"
-                        : "text-foreground/80 hover:text-primary"
+                      "px-3 py-2 text-[13px] font-medium flex items-center gap-1 rounded-md transition-colors text-foreground/80 hover:text-primary"
                     )}
                   >
                     {link.label} <ChevronDown className="w-3 h-3" />
@@ -110,11 +86,8 @@ export default function Header() {
                   end={link.to === "/"}
                   className={({ isActive }) =>
                     cn(
-                      "px-3 py-2 text-[13px] font-medium rounded-md transition-colors",
-                      transparent
-                        ? "text-white/90 hover:text-white"
-                        : "text-foreground/80 hover:text-primary",
-                      isActive && (transparent ? "text-white font-semibold" : "text-primary font-semibold")
+                      "px-3 py-2 text-[13px] font-medium rounded-md transition-colors text-foreground/80 hover:text-primary",
+                      isActive && "text-primary font-semibold"
                     )
                   }
                 >
@@ -128,27 +101,21 @@ export default function Header() {
           <div className="hidden lg:flex items-center">
             <Link
               to="/contact"
-              className={cn(
-                "px-5 py-2.5 rounded-md text-sm font-semibold transition-all",
-                transparent
-                  ? "bg-white text-primary hover:bg-white/90"
-                  : "bg-gradient-accent text-white hover:opacity-90 shadow-sm"
-              )}
+              className="px-5 py-2.5 rounded-md text-sm font-semibold bg-gradient-accent text-white hover:opacity-90 shadow-sm transition-opacity"
             >
               Contact Us
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
           <button
             className="lg:hidden p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
             {mobileOpen ? (
-              <X className={cn("w-6 h-6", transparent ? "text-white" : "text-primary")} />
+              <X className="w-6 h-6 text-primary" />
             ) : (
-              <Menu className={cn("w-6 h-6", transparent ? "text-white" : "text-primary")} />
+              <Menu className="w-6 h-6 text-primary" />
             )}
           </button>
         </div>
