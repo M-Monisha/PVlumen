@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr] gap-10">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <img src="/logo.jpeg" alt="PV Lumens" className="h-20 w-auto object-contain" />
+              <img src="/logo.jpeg" alt="PV Lumens" className="h-20 w-auto object-contain brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed text-white/70 max-w-sm">
               Nation-wide value added distributor for Network Infrastructure, Safety & Security, Business Productivity, Test & Measurement and Drone solutions.

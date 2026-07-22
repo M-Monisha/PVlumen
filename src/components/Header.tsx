@@ -35,6 +35,7 @@ export default function Header() {
               src="/logo.jpeg"
               alt="PV Lumens"
               className="h-20 w-auto object-contain"
+              style={{ mixBlendMode: "multiply" }}
             />
           </Link>
 
