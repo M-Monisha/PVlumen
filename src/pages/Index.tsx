@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Zap, Award, Users2, Building2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
@@ -7,12 +6,10 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import { categories } from "@/data/categories";
 import { brands } from "@/data/brands";
 import { stats, industries, strengths, posts } from "@/data/site";
-import { products } from "@/data/products";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const strengthIcons = [Building2, Zap, Award, ShieldCheck, Users2, Award];
 
-// Map industry slugs to images in /public
 const industryImages: Record<string, string> = {
   "data-centre": "/datacentre.avif",
   "enterprise": "/enterprise.jpg",
@@ -24,7 +21,6 @@ const industryImages: Record<string, string> = {
   "public-infra": "/publicinfrastructure.webp",
 };
 
-// Pick products that have images for the hero mosaic
 const heroProductImages = [
   "https://www.pvlumens.com/images/products/DS3678-SR.jpg",
   "https://www.pvlumens.com/images/products/testo-103-l1.jpg",
@@ -35,20 +31,6 @@ const heroProductImages = [
   "https://www.pvlumens.com/images/products/Sidekick1111.jpg",
   "https://www.pvlumens.com/images/products/ECSE-Certified.jpg",
 ];
-
-const strengthIcons = [Building2, Zap, Award, ShieldCheck, Users2, Award];
-
-// Map industry slugs to images in /public
-const industryImages: Record<string, string> = {
-  "data-centre": "/datacentre.avif",
-  "enterprise": "/enterprise.jpg",
-  "transport": "/werahouse.webp",
-  "retail": "/retail.webp",
-  "manufacturing": "/manufacturing.jpg",
-  "power": "/power.jpg",
-  "defense": "/defense.jpg",
-  "public-infra": "/publicinfrastructure.webp",
-};
 
 export default function Index() {
   useDocumentTitle(
@@ -61,15 +43,19 @@ export default function Index() {
   return (
     <>
       {/* ── Hero — split layout: text left, product mosaic right ── */}
-      <section className="relative min-h-[100svh] bg-primary overflow-hidden flex items-center">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: "radial-gradient(circle at 70% 50%, hsl(199 80% 51% / 0.6), transparent 60%), radial-gradient(circle at 20% 80%, hsl(199 80% 51% / 0.3), transparent 50%)" }}
+      <section className="relative min-h-[calc(100vh-88px)] bg-primary overflow-hidden flex items-center">
+        {/* Subtle radial glow */}
+        <div
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 75% 50%, hsl(199 80% 51% / 0.7), transparent 55%), radial-gradient(circle at 15% 80%, hsl(199 80% 51% / 0.3), transparent 45%)",
+          }}
         />
 
         <div className="relative container-wide w-full py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-          {/* Left — text content */}
+          {/* Left — text */}
           <div>
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -85,7 +71,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-              className="text-4xl md:text-5xl lg:text-[60px] font-extrabold leading-[1.06] tracking-tight text-white"
+              className="text-4xl md:text-5xl lg:text-[58px] font-extrabold leading-[1.06] tracking-tight text-white"
             >
               Distribution,{" "}
               <span className="italic text-accent">Redefined</span>
@@ -124,7 +110,6 @@ export default function Index() {
               </Link>
             </motion.div>
 
-            {/* Stats */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -140,19 +125,18 @@ export default function Index() {
             </motion.div>
           </div>
 
-          {/* Right — product image mosaic */}
+          {/* Right — product mosaic */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="hidden lg:grid grid-cols-3 gap-3 auto-rows-[120px]"
           >
-            {/* Category images — larger tiles */}
             {categories.map((cat, i) => (
               <Link
                 key={cat.slug}
                 to={`/products/${cat.slug}`}
-                className={`group relative overflow-hidden rounded-xl bg-white/10 border border-white/20 hover:border-accent hover:scale-[1.02] transition-all duration-300 ${i === 0 ? "row-span-2" : ""}`}
+                className={`group relative overflow-hidden rounded-xl border border-white/20 hover:border-accent hover:scale-[1.02] transition-all duration-300 ${i === 0 ? "row-span-2" : ""}`}
               >
                 <img
                   src={cat.image}
@@ -166,12 +150,8 @@ export default function Index() {
                 </div>
               </Link>
             ))}
-            {/* Product images — small tiles */}
             {heroProductImages.slice(0, 4).map((src, i) => (
-              <div
-                key={i}
-                className="relative overflow-hidden rounded-xl bg-white border border-white/20"
-              >
+              <div key={i} className="relative overflow-hidden rounded-xl bg-white">
                 <img
                   src={src}
                   alt="PV Lumens product"
@@ -245,7 +225,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Industries — cards with image background, dark text overlay */}
+      {/* Industries */}
       <section className="container-wide py-20">
         <SectionHeading
           eyebrow="Industry Focus"
@@ -258,16 +238,13 @@ export default function Index() {
               to="/industries"
               className="group relative overflow-hidden rounded-xl min-h-[140px] flex flex-col justify-end hover:-translate-y-1 transition-transform duration-300 shadow-sm hover:shadow-card"
             >
-              {/* Background image */}
               <img
                 src={industryImages[ind.slug] ?? "/datacentre.avif"}
                 alt={ind.name}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              {/* Dark gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
-              {/* Text */}
               <div className="relative p-4">
                 <div className="font-display font-bold text-white text-sm md:text-[15px] leading-snug drop-shadow">{ind.name}</div>
                 <div className="text-[11px] text-white/80 mt-1 leading-relaxed">{ind.desc}</div>
@@ -277,7 +254,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Strengths — grid cards */}
+      {/* Strengths */}
       <section className="bg-surface py-16">
         <div className="container-wide">
           <SectionHeading
@@ -289,10 +266,7 @@ export default function Index() {
             {strengths.map((s, i) => {
               const Icon = strengthIcons[i % strengthIcons.length];
               return (
-                <div
-                  key={s.title}
-                  className="bg-white rounded-xl border border-border p-6 hover:shadow-card hover:border-accent transition-all"
-                >
+                <div key={s.title} className="bg-white rounded-xl border border-border p-6 hover:shadow-card hover:border-accent transition-all">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-primary flex-shrink-0">
                       <Icon className="w-5 h-5" />
