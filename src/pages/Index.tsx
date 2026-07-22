@@ -30,6 +30,8 @@ const heroProductImages = [
   "https://www.pvlumens.com/images/products/testo-mini-w-l1.jpg",
   "https://www.pvlumens.com/images/products/Sidekick1111.jpg",
   "https://www.pvlumens.com/images/products/ECSE-Certified.jpg",
+  "https://www.pvlumens.com/images/products/Flir_One%20Edge%20Pro.jpg",
+  "https://www.pvlumens.com/images/products/testo-mini-w-l1.jpg",
 ];
 
 export default function Index() {
@@ -150,7 +152,7 @@ export default function Index() {
                 </div>
               </Link>
             ))}
-            {heroProductImages.slice(0, 4).map((src, i) => (
+            {heroProductImages.slice(0, 6).map((src, i) => (
               <div key={i} className="relative overflow-hidden rounded-xl bg-white">
                 <img
                   src={src}
