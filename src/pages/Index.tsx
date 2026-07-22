@@ -60,9 +60,23 @@ export default function Index() {
 
   return (
     <>
-      {/* ── Hero — split layout: text left, product mosaic right ── */}
-      <section className="relative min-h-[100svh] bg-primary overflow-hidden flex items-center">
-        {/* Subtle background pattern */}
+      {/* ── Hero — video background, split layout ── */}
+      <section className="relative min-h-[100svh] overflow-hidden flex items-center">
+        {/* Video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          aria-hidden="true"
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+        {/* Subtle accent glow */}
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "radial-gradient(circle at 70% 50%, hsl(199 80% 51% / 0.6), transparent 60%), radial-gradient(circle at 20% 80%, hsl(199 80% 51% / 0.3), transparent 50%)" }}
         />
