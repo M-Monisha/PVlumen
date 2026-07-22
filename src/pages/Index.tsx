@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Zap, Award, Users2, Building2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -33,15 +34,16 @@ export default function Index() {
 
   return (
     <>
-      {/* Hero — video background, content centred */}
-      <section className="relative -mt-[88px] min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Poster shown immediately — replaced by video once it plays */}
+      {/* ── Hero — fullscreen video, Framer Motion animations ── */}
+      <section className="relative -mt-[88px] h-[100svh] flex items-center justify-center overflow-hidden">
+        {/* Poster (shows instantly) */}
         <img
           src="/datacentre.avif"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
         />
+        {/* Video */}
         <video
           autoPlay
           muted
@@ -54,44 +56,71 @@ export default function Index() {
         >
           <source src="/hero.mp4" type="video/mp4" />
         </video>
+
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.55)" }} />
 
-        <div className="relative container-wide text-center text-white px-4 pt-[88px]">
-          <div className="animate-fade-up max-w-4xl mx-auto">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-[68px] font-bold leading-[1.05]">
-              Distribution, <span className="text-accent">Redefined</span><br />
-              for a connected India.
-            </h1>
-            <p className="text-base md:text-lg text-white/85 mt-6 max-w-2xl mx-auto leading-relaxed">
-              India's trusted value-added distributor — connecting 2,000+ channel partners with 25+ global technology leaders,
-              with reach extending across Sri Lanka, Bangladesh, Nepal &amp; the Maldives.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-              <Link
-                to="/brands"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-md bg-gradient-accent text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-elevated"
-              >
-                Explore Brands <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                to="/products"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-md bg-white/10 border border-white/40 text-white font-semibold text-sm hover:bg-white/20 transition-colors backdrop-blur"
-              >
-                Browse Products
-              </Link>
-            </div>
+        {/* Hero content — centred */}
+        <div className="relative z-10 container-wide text-center text-white px-4 pt-[88px]">
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            className="text-4xl md:text-5xl lg:text-[68px] font-extrabold leading-[1.05] tracking-tight"
+          >
+            Distribution,{" "}
+            <span className="italic text-accent">Redefined</span>
+            <br />for a connected India.
+          </motion.h1>
 
-            {/* Stats row */}
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-6 mt-12 pt-8 border-t border-white/20 max-w-3xl mx-auto">
-              {stats.map((s) => (
-                <div key={s.label}>
-                  <div className="font-display text-xl md:text-2xl font-bold text-white">{s.value}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-white/60 mt-0.5">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Subtext */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.35 }}
+            className="mt-6 text-base md:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed"
+          >
+            India's trusted value-added distributor — connecting 2,000+ channel partners
+            with 25+ global technology leaders, with reach extending across Sri Lanka,
+            Bangladesh, Nepal &amp; the Maldives.
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
+            className="flex flex-wrap items-center justify-center gap-4 mt-8"
+          >
+            <Link
+              to="/brands"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-white text-primary font-semibold text-sm hover:bg-white/90 transition-colors shadow-elevated"
+            >
+              Explore Brands <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-white/50 text-white font-semibold text-sm hover:bg-white/10 transition-colors backdrop-blur"
+            >
+              Browse Products
+            </Link>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.75 }}
+            className="grid grid-cols-3 sm:grid-cols-5 gap-6 mt-14 pt-8 border-t border-white/20 max-w-3xl mx-auto"
+          >
+            {stats.map((s) => (
+              <div key={s.label}>
+                <div className="text-xl md:text-2xl font-bold text-white">{s.value}</div>
+                <div className="text-[10px] uppercase tracking-wider text-white/55 mt-0.5">{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
