@@ -62,6 +62,13 @@ export default function Index() {
     <>
       {/* ── Hero — video background, split layout ── */}
       <section className="relative min-h-[100svh] overflow-hidden flex items-center">
+        {/* Poster image shown instantly before video loads */}
+        <img
+          src="/datacentre.avif"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         {/* Video background */}
         <video
           autoPlay
@@ -69,8 +76,8 @@ export default function Index() {
           loop
           playsInline
           preload="auto"
+          poster="/datacentre.avif"
           className="absolute inset-0 w-full h-full object-cover"
-          aria-hidden="true"
         >
           <source src="/hero.mp4" type="video/mp4" />
         </video>
