@@ -61,13 +61,13 @@ export default function Index() {
   return (
     <>
       {/* ── Hero — split layout: text left, product mosaic right ── */}
-      <section className="relative -mt-[88px] min-h-[100svh] bg-primary overflow-hidden flex items-center">
+      <section className="relative min-h-[100svh] bg-primary overflow-hidden flex items-center">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "radial-gradient(circle at 70% 50%, hsl(199 80% 51% / 0.6), transparent 60%), radial-gradient(circle at 20% 80%, hsl(199 80% 51% / 0.3), transparent 50%)" }}
         />
 
-        <div className="relative container-wide w-full pt-[88px] pb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative container-wide w-full py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
           {/* Left — text content */}
           <div>
