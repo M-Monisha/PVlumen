@@ -26,7 +26,8 @@ export default function Header() {
   return (
     <>
       <header
-        className="fixed top-0 inset-x-0 z-50 h-[88px] bg-white border-b-2 border-gray-200 shadow-md"
+        className="fixed top-0 inset-x-0 z-50 h-[88px] border-b border-gray-200 shadow-sm"
+        style={{ backgroundColor: "#ffffff" }}
       >
         <div className="container-wide h-full flex items-center justify-between gap-4">
           {/* Logo */}
